@@ -6,6 +6,16 @@ interface IDateClass {
     getUTCToTimezone(dateUTC: string, timezone: string): string;
 }
 
+interface IDate {
+    year: number,
+    month: number,
+    date?: number,
+    hours?: number,
+    minutes?: number,
+    seconds?: number,
+    ms?: number,
+}
+
 class DateClass implements IDateClass {
     public getNowClient(): string {
         return this.getUTCToTimezone(this.getClientToUTC(), this.getTimezoneClient())
@@ -15,22 +25,16 @@ class DateClass implements IDateClass {
         return this.getClientToUTC()
     }
 
-    public getClientToUTC(date = null): string {
+    public getClientToUTC(date: string | IDate = null): string {
         let newDate
 
         if (date === null) {
             newDate = new Date()
-            return this.defaultFormat(newDate.toISOString())
         }
-
-        if (typeof date === 'string') {
-            date = this.removeTimezone(date);
-
+        else if (typeof date === 'string') {
+            date = this.removeTimezone(date)
             newDate = new Date(date)
-            return this.defaultFormat(newDate.toISOString())
-        }
-
-        if (typeof date === 'object') {
+        } else if (typeof date === 'object') {
             newDate = new Date(Date.UTC(
                 date.year,
                 date.month,
@@ -40,9 +44,9 @@ class DateClass implements IDateClass {
                 date.seconds,
                 date.ms,
             ))
-
-            return this.defaultFormat(newDate.toISOString())
         }
+
+        return this.defaultFormat(newDate.toISOString())
     }
 
     public getUTCToClient(date): string {
@@ -57,13 +61,13 @@ class DateClass implements IDateClass {
         return new Intl.DateTimeFormat().resolvedOptions().timeZone
     }
 
-    protected removeTimezone(date): string {
+    protected removeTimezone(date: string): string {
         return (date.match(/.[0-9]{3}Z$/))
             ? date.slice(0, -5)
             : date
     }
 
-    protected defaultFormat(date): string {
+    protected defaultFormat(date: string): string {
         date = this.removeTimezone(date)
         date = date.replace('T', ' ')
         return date
