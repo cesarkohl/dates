@@ -1,51 +1,23 @@
 interface IDateClass {
     getNowClient(): string;
     getNowUTC(): string;
-    getClientToUTC(date: string | null): string;
+    getClientToUTC(date: string): string;
     getUTCToClient(date: string): string;
     getUTCToTimezone(dateUTC: string, timezone: string): string;
 }
 
-interface IDate {
-    year: number,
-    month: number,
-    date?: number,
-    hours?: number,
-    minutes?: number,
-    seconds?: number,
-    ms?: number,
-}
-
 class DateClass implements IDateClass {
     public getNowClient(): string {
-        return this.getUTCToTimezone(this.getClientToUTC(), this.getTimezoneClient())
+        return this.getUTCToTimezone(this.getNowUTC(), this.getTimezoneClient())
     }
 
     public getNowUTC(): string {
-        return this.getClientToUTC()
+        const newDate = new Date()
+        return this.defaultFormat(newDate.toISOString())
     }
 
-    public getClientToUTC(date: string | IDate = null): string {
-        let newDate
-
-        if (date === null) {
-            newDate = new Date()
-        }
-        else if (typeof date === 'string') {
-            date = this.removeTimezone(date)
-            newDate = new Date(date)
-        } else if (typeof date === 'object') {
-            newDate = new Date(Date.UTC(
-                date.year,
-                date.month,
-                date.date,
-                date.hours,
-                date.minutes,
-                date.seconds,
-                date.ms,
-            ))
-        }
-
+    public getClientToUTC(date: string): string {
+        const newDate = new Date(this.removeTimezone(date))
         return this.defaultFormat(newDate.toISOString())
     }
 
