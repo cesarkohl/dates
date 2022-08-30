@@ -3,7 +3,7 @@ interface IDateClass {
     getNowUTC(): string;
     getClientToUTC(date: string): string;
     getUTCToClient(date: string): string;
-    getUTCToTimezone(dateUTC: string, timezone: string): string;
+    getUTCToTimezone(date: string, timezone: string): string;
 }
 
 class DateClass implements IDateClass {
@@ -25,8 +25,8 @@ class DateClass implements IDateClass {
         return this.getUTCToTimezone(date, this.getTimezoneClient())
     }
 
-    public getUTCToTimezone(dateUTC, timezone): string {
-        return new Date(`${dateUTC}.000Z`).toLocaleString('sv-SE', {timeZone: timezone});
+    public getUTCToTimezone(date, timezone): string {
+        return new Date(`${date}.000Z`).toLocaleString('sv-SE', {timeZone: timezone});
     }
 
     protected getTimezoneClient(): string {
